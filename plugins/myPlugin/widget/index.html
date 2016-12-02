@@ -2,30 +2,436 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<!--
-		NOTE:
-		1. You can reference the file in SDK via relative path
-		2. The Control and Widget Should NOT share resources. Only the Widget folder will make it to the device
-		3. You may include any JS framework you want with your Widget and Control folders. However, keep in mind
-		    to keep you plugin as light weight as possible for performance and transport reasons
-	-->
-
-	<!-- You can load helper.css to use our helper classes.
-	<link href="../../../../styles/helper.css" rel="stylesheet">
-	-->
-
-	<!-- JS -->
-	<script src="../../../scripts/buildfire.js"></script>
-
-	<!--
-   <script src="../../../../scripts/angular/angular.min.js"></script>
-   <script src="../../../../scripts/angular/ui-bootstrap.min.js"></script>
-
-   <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-   -->
+    <script src="../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../scripts/angular/ui-bootstrap.min.js"></script>
+    <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../scripts/buildfire.js"></script>
 </head>
 <body>
-<span><a ref="">Parents</></a></span>
-</body>
+    <style>
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        #rotate {
+            position: absolute;
+            top: -32%;
+            left: 470px;
+            transform: rotate(28deg);
+        }
+
+        .schedule {
+            transform: scale(.60);
+            position: absolute;
+            top: 160px;
+            margin-left: -130px;
+        }
+
+        .week {
+            border-top: solid;
+            border-top-color: orange;
+            width: 50px;
+            height: 50px;
+        }
+
+        #title-of-page {
+            text-align: center;
+            border-top-width: 7px;
+            color: Blue;
+        }
+
+        #road {
+            background: black;
+            color: white;
+            white-space: nowrap;
+            cursor: default;
+            border-style: solid;
+            position: absolute;
+            top: -90%;
+            bottom: 0px;
+            width: 48px;
+            text-align: center;
+            font-size: 40px;
+            height: 500px;
+        }
+
+        .check {
+            position: absolute;
+            max-height: 30px;
+            margin-top: 5px;
+            margin-left: 4px;
+        }
+
+        .class-button {
+            background-color: lightgreen;
+            margin-right: 0px;
+            border: solid;
+            border-color: brown;
+            width: 175px;
+            height: 50px;
+            margin-left: 0px;
+            font-size: 22px;
+        }
+
+        .reschedule img {
+            max-height: 43px;
+        }
+
+        .class-date {
+            float: left;
+            font-size: 22px;
+            color: darkred;
+            margin-top: 3px;
+        }
+
+        .stretch-calendar {
+            height: 44px;
+            width: 90px;
+            position: absolute;
+            margin-top: -16px;
+            right: 89px;
+        }
+
+        .logo {
+            max-height: 50px;
+            position: absolute;
+            left: 0;
+        }
+
+        .drives {
+            position: absolute;
+            right: 0px;
+            bottom: 40px;
+        }
+
+        .drive img {
+            height: 80px;
+            vertical-align: top;
+        }
+
+        .drive {
+            height: 40px;
+        }
+
+        #reschedule-options {
+            display: none;
+        }
+
+        #full-schedule {
+            display: none;
+        }
+
+        #sign-in {
+            display: none;
+        }
+    </style>
+        <div id="testAPI"></div>
+        <div id="sign-in">
+            <div>
+                <label>User Name</label>
+                <div>
+                    <input class="form-control user-name" type="text">
+                </div>
+            </div>
+            <div>
+                <label class="col-form-label">Password</label>
+                <div>
+                    <input class="form-control user-password" type="password">
+                </div>
+                <button type="button" class="btn submit-user">
+                    Submit
+                </button>
+            </div>
+        </div>
+        <div ng-app="DriverSchool" ng-controller="studentController as school">
+            <div id="progress">
+                <h1 id="title-of-page"><img class="logo" src={{school.person.institution.logo}} />Progress  </h1>
+                <h3>{{school.person.name}}</h3>
+                <div class="reschedule">
+                    <h5>Available Reschedules: {{school.person.remainingReschedules}}</h5>
+                    <button type="button" class="fullSchedule btn">
+                        Schedule
+                    </button>
+                    <div id="reschedules">
+                    </div>
+                    <div ng-show="school.person.remainingReschedules == '0'">
+                        <img src=".images/rescheduleX.png" /><br>
+                        <img src=".images/rescheduleX.png" /><br>
+                        <img src=".images/rescheduleX.png" /><br>
+                    </div>
+                    <div ng-show="school.person.remainingReschedules == '1'">
+                        <img src=".images/rescheduleX.png" /><br>
+                        <img src=".images/rescheduleX.png" /><br>
+                        <img src=".images/reschedule.png" /><br>
+                    </div>
+                    <div ng-show="school.person.remainingReschedules == '2'">
+                        <img src=".images/rescheduleX.png" /><br>
+                        <img src=".images/reschedule.png" /><br>
+                        <img src=".images/reschedule.png" /><br>
+                    </div>
+                    <div ng-show="school.person.remainingReschedules == '3'">
+                        <img src=".images/reschedule.png" /><br>
+                        <img src=".images/reschedule.png" /><br>
+                        <img src=".images/reschedule.png" /><br>
+                    </div>
+                </div>
+                <div id="rotate">
+                    <div id="road">
+                    </div>
+                    <div class="schedule">
+                        <div class-schedule></div>
+                    </div>
+                </div>
+                <div class="drives">
+                </div>
+            </div>
+
+            <div id="reschedule-options">
+                <h1 id="title-of-page"><img class="logo" src={{school.person.institution.logo}} />Reschedule  </h1>
+                <hr />
+                <h4> You have missed or reschuled {{3 - school.person.remainingReschedules}} classes. Doing this a 4th time could result in a failed class.</h4>
+                <br />
+                <h4 id="session-name">Class name: </h4>
+                <div>
+                    <h4>Currently scheduled for:</h4>
+                    <p id="current-date"></p>
+                </div>
+                <h4> Reschedule for:</h4>
+                <select id="reschedule-select"></select>
+                <br />
+                <button type="button" id="confirm" class="btn btn-primary">
+                    Confirm
+                </button>
+                <button type="button" class="btn home">
+                    Progress
+                </button>
+                <button type="button" class="fullSchedule btn">
+                    Schedule
+                </button>
+            </div>
+
+            <div id="full-schedule">
+                <h1 id="title-of-page"><img class="logo" src={{school.person.institution.logo}} />Full Schedule  </h1>
+                <div class="list-group">
+                    <a href="#" class="list-group-item">First item</a>
+                    <a href="#" class="list-group-item">Second item</a>
+                    <a href="#" class="list-group-item">Third item</a>
+                </div>
+                <button type="button" class="btn home">
+                    Progress
+                </button>
+            </div>
+        </div>
+
+
+
+        <script>
+        (function () {
+            var driveSchoolAPI = "http://drivingschoolportal.azurewebsites.net/odata/StudentSchoolEvents?$expand=SchoolEvent&$filter=StudentId%20eq%201";
+            $.ajax({
+                dataType: "json",
+                url: driveSchoolAPI,
+                headers: { "Authorization": "Basic " + btoa("ABC123:blah") },
+                success: (function(jsonObject) {
+                    $("#testAPI").text(jsonObject.value[0].SchoolEvent.Title);
+                    debugger;
+                })
+            })
+            
+        })();
+        var app = angular.module('DriverSchool', []);
+        app.controller('studentController', function () {
+            this.person = student;
+        });
+        app.directive('classSchedule', function () {
+            classDivs = [];
+            for (i = 0; i < student.institution.sessionCount; i++) {
+                classDivs.push('<div ng-show="school.person.classes.class'
+                    + (student.institution.sessionCount - i) + '.attended"><img src=".images/checkbox.png" class="check" /> <button class="fullSchedule btn-default class-button"> Class '
+                    + (student.institution.sessionCount - i) + '</button></div><div ng-hide="school.person.classes.class'
+                    + (student.institution.sessionCount - i) + '.attended"><button class="btn-default class-button class-number" value="'
+                    + (student.institution.sessionCount - i) + '"><span class="class-date"><img class="stretch-calendar" src=".images/stretch.png" />{{school.person.classes.class'
+                    + (student.institution.sessionCount - i) + '.date}} &nbsp;</span> Class '
+                    + (student.institution.sessionCount - i) + '</button></div>');
+                }
+                return {
+                    restrict: 'A',
+                    template: classDivs.join("")
+                }
+         });
+        $('.home').click(function () {
+            location.reload();
+        });
+        $(".fullSchedule").click(function () {
+            $("#progress").hide(255);
+            $('#reschedule-options').hide(255);
+            $('#full-schedule').show();
+        });
+        $(".submit-user").click(function () {
+            $(".submit-user").hide(255);
+            document.getElementById(".submit-user").value = userId;
+        })
+        $("#complete-schedule").click(function () {
+            $("#progress").hide(255);
+            $('#reschedule-options').hide(255);
+            $('#full-schedule').show();
+        });
+        $(document).ready(function () {
+            event.preventDefault();
+            $(".class-number").click(function () {
+                var selectedSession = "class" + this.value;
+                $("#progress").hide(255);
+                $("#session-name").append(student.classes[selectedSession].name);
+                $("#current-date").text(student.classes[selectedSession].date + " at: " + student.classes[selectedSession].time);
+                $("#reschedule-options").show();
+                for (i = 0; i < student.classes[selectedSession].reschedule.length; i++) {
+                    $("#reschedule-select").append('<option>' + student.classes[selectedSession].reschedule[i] + "</option>");
+                }
+            });
+
+        });
+        var student = {
+            name: "Alan Denison",
+            institution: {
+                name: "Baller Tier Driving School",
+                sessionCount: 16,
+                logo: ".images/testLogo.png",
+                driveCount: 5,
+            },
+            remainingReschedules: 2,
+            drivingExamComplete: false,
+            writtenExamComplete: true,
+            classes: {
+                class1: {
+                    name: "Hitting pedestrians, always wrong? Maybe...",
+                    attended: false,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class2: {
+                    name: "Tricking a Breathalyzer",
+                    attended: true,
+                    date: "10/21",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class3: {
+                    name: "Road Rage and the Human Condition",
+                    attended: true,
+                    date: "10/22",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class4: {
+                    name: "Mastering Texting While Driving",
+                    attended: true,
+                    date: "10/24",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class5: {
+                    name: "Turn Signals and Other Useless Car Features",
+                    attended: true,
+                    date: "10/25",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class6: {
+                    name: "Practical Drifting",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class7: {
+                    name: "Fast Food Drive-thru Etiquette",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class8: {
+                    name: "A History of Obscene Jestures",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 7pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class9: {
+                    name: "Seniors: the Slothful Menace",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class10: {
+                    name: "Offensive Driving is the Best Defensive Driving",
+                    attended: false,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class11: {
+                    name: "Driver Stereotypes: There for a Reason",
+                    attended: false,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class12: {
+                    name: "Dukes of Hazzard and the Modern Commuter",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class13: {
+                    name: "Driving 15mph in the Rain",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class14: {
+                    name: "Freakin Roundabouts..How do they Work?",
+                    attended: true,
+                    date: "11/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class15: {
+                    name: "Grand Theft Auto: What They Got Right",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class16: {
+                    name: "Parallel Universe Parking",
+                    attended: true,
+                    date: "10/20",
+                    time: "4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+
+            },
+
+            drive1: {
+                completed: true,
+            },
+            drive2: true,
+            drive3: false,
+            drive4: false,
+            drive5: false,
+
+        }
+
+
+        </script>
+    </body>
 </html>

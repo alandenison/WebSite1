@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../scripts/angular/ui-bootstrap.min.js"></script>
+    <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../scripts/buildfire.js"></script>
+</head>
+<body>
+    <style>
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+        }
+
+        #rotate {
+            position: absolute;
+            top: -32%;
+            left: 470px;
+            transform: rotate(28deg);
+        }
+
+        .schedule {
+            transform: scale(.60);
+            position: absolute;
+            top: 160px;
+            margin-left: -130px;
+        }
+
+        .week {
+            border-top: solid;
+            border-top-color: orange;
+            width: 50px;
+            height: 50px;
+        }
+
+        #title-of-page {
+            text-align: center;
+            border-top-width: 7px;
+            color: Blue;
+        }
+
+        #road {
+            background: black;
+            color: white;
+            white-space: nowrap;
+            cursor: default;
+            border-style: solid;
+            position: absolute;
+            top: -90%;
+            bottom: 0px;
+            width: 48px;
+            text-align: center;
+            font-size: 40px;
+            height: 2500px;
+        }
+
+        .check {
+            position: absolute;
+            max-height: 30px;
+            margin-top: 5px;
+            margin-left: 4px;
+        }
+
+        .class-number {
+            background-color: lightgreen;
+            margin-right: 0px;
+            border: solid;
+            border-color: brown;
+            width: 175px;
+            height: 50px;
+            margin-left: 0px;
+            font-size: 22px;
+        }
+
+        .reschedule img {
+            max-height: 43px;
+        }
+
+        .class-date {
+            float: left;
+            font-size: 22px;
+            color: darkred;
+            margin-top: 3px;
+        }
+
+        .stretch-calendar {
+            height: 44px;
+            width: 90px;
+            position: absolute;
+            margin-top: -16px;
+            right: 89px;
+        }
+
+        .logo {
+            max-height: 50px;
+            position: absolute;
+            left: 0;
+        }
+
+        .drives {
+            position: absolute;
+            right: 0px;
+            bottom: 20px;
+        }
+
+        .drive img {
+            height: 80px;
+            vertical-align: top;
+        }
+
+        .drive {
+            height: 40px;
+        }
+    </style>
+
+    <h1 id="title-of-page"><img class="logo" src=".images/testLogo.png" />Progress</h1>
+    <div ng-app="DriverSchool" ng-controller="studentController as school">
+        <h3>{{school.person.name}}</h3>
+        <div class="reschedule">
+            <h5>Available Reschedules: {{3 - school.person.reschedule}}</h5>
+            <img src=".images/rescheduleX.png" /><br>
+            <img src=".images/rescheduleX.png" /><br>
+            <img src=".images/reschedule.png" /><br>
+        </div>
+        <div id="rotate">
+            <div id="road">
+                |<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />|<br /><br /><br />
+            </div>
+            <div class="schedule">
+                <div class-number></div>
+            </div>
+        </div>
+        <div class="drives">
+            <div class="drive">
+                <img src=".images/car2.png" /><br />
+            </div>
+            <div class="drive">
+                <img src=".images/car2.png" /><br />
+            </div>
+            <div class="drive">
+                <img src=".images/car2.png" /><br />
+            </div>
+            <div class="drive">
+                <img src=".images/car2.png" /><br />
+            </div>
+            <div class="drive">
+                <img src=".images/car2.png" />
+            </div>
+        </div>
+
+        <div>
+
+        </div>
+
+
+        <script>
+        var app = angular.module('DriverSchool', []);
+        app.controller('studentController', function () {
+            this.person = student;
+        });
+        app.directive('classNumber', function () {
+            classDivs = [];
+            for (i = 0; i < school.classNumber; i++) {
+                classDivs.push('
+                    <div ng-show="school.person.class'+ (school.classNumber - i) + '">
+                        <img src=".images/checkbox.png" class="check" /> 
+                        <button class="btn-default class-number"> Class '+ (school.classNumber - i) + '</button>
+                    </div>
+                    <div ng-show="!school.person.class'+ (school.classNumber - i) + '">
+                        <button class="btn-default class-number">
+                            <span class="class-date">
+                                 <img class="stretch-calendar" src=".images/stretch.png" />10-22 &nbsp;
+                            </span> Class '+ (school.classNumber - i) + '
+                         </button>
+                     </div>');
+            }
+            return {
+                restrict: 'A',
+                template: classDivs.join("")
+                }
+        });
+
+        $(document).ready(function () {
+
+            $(".class-number").click(function () {
+                $("#title-of-page").text("hi3");
+            });
+
+        });
+        var student = {
+            name: "Alan Denison",
+            school: "School of Driving",
+            classes: {
+                class1: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class2: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class3: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class4: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class5: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class6: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class7: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class8: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class9: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class10: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class11: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class12: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class13: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class14: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class15: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                },
+                class16: {
+                    attended: false,
+                    class1Date: "10/19 4pm",
+                    reschedule: ["11/21 5pm", "11/23 4pm", "11/23 5pm", "11/24 2pm"]
+                }
+            },
+            
+            drive1: {
+                completed: true,
+            },
+            drive2: true,
+            drive3: false,
+            drive4: false,
+            drive5: false,
+            reschedule: 2,
+            logo : ".images/testLogo.png",
+        }
+        var school = {
+            classNumber: 16,
+
+        }
+        var studentAttendance = {
+            class1: false,
+            class2: true,
+            class3: true,
+            class4: true,
+            class5: true,
+            class5: true,
+            class6: true,
+            class7: true,
+            class8: true,
+            class9: true,
+            class10: true,
+            class11: false,
+            class12: true,
+        }
+        </script>
+</body>
+</html>

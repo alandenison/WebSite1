@@ -1,11 +1,11 @@
 {
-  "author":"Daniel Hindi"
-,"pluginName":"Hello World"
-,"pluginDescription":"Bare bones plugin showing simple autonomy of a plugin"
-,"supportEmail":"devSupport@buildfire.com"
+  "author":"Alan Denison"
+,"pluginName":"Driving School Schedule"
+,"pluginDescription":"angular app showing info from driving school"
+,"supportEmail":"alan@thinkfast.com"
 ,"control":{
   "content":{
-    "enabled":true
+    "enabled":false
   }
 , "design":{
     "enabled":false
