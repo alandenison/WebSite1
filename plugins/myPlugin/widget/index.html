@@ -230,38 +230,37 @@
 
 
         <script>
-        (function () {
-            var driveSchoolAPI = "http://drivingschoolportal.azurewebsites.net/odata/StudentSchoolEvents?$expand=SchoolEvent&$filter=StudentId%20eq%201";
-            $.ajax({
-                dataType: "json",
-                url: driveSchoolAPI,
-                headers: { "Authorization": "Basic " + btoa("ABC123:blah") },
-                success: (function(jsonObject) {
-                    $("#testAPI").text(jsonObject.value[0].SchoolEvent.Title);
-                    debugger;
-                })
-            })
-            
-        })();
         var app = angular.module('DriverSchool', []);
         app.controller('studentController', function () {
             this.person = student;
         });
         app.directive('classSchedule', function () {
+            var driveSchoolAPI = "http://drivingschoolportal.azurewebsites.net/odata/StudentSchoolEvents?$expand=SchoolEvent&$filter=StudentId%20eq%201";
             classDivs = [];
-            for (i = 0; i < student.institution.sessionCount; i++) {
-                classDivs.push('<div ng-show="school.person.classes.class'
-                    + (student.institution.sessionCount - i) + '.attended"><img src=".images/checkbox.png" class="check" /> <button class="fullSchedule btn-default class-button"> Class '
-                    + (student.institution.sessionCount - i) + '</button></div><div ng-hide="school.person.classes.class'
-                    + (student.institution.sessionCount - i) + '.attended"><button class="btn-default class-button class-number" value="'
-                    + (student.institution.sessionCount - i) + '"><span class="class-date"><img class="stretch-calendar" src=".images/stretch.png" />{{school.person.classes.class'
-                    + (student.institution.sessionCount - i) + '.date}} &nbsp;</span> Class '
-                    + (student.institution.sessionCount - i) + '</button></div>');
-                }
-                return {
-                    restrict: 'A',
-                    template: classDivs.join("")
-                }
+            sessionCount = 10;
+                $.ajax({
+                    dataType: "json",
+                    url: driveSchoolAPI,
+                    async: false,
+                    headers: { "Authorization": "Basic " + btoa("ABC123:blah") },
+                    success: (function (jsonObject) {
+                            sessionCount = jsonObject.value.length;
+                            })
+                        })
+                        for (i = 0; i < sessionCount; i++) {
+                            classDivs.push('<div ng-show="school.person.classes.class'
+                                + (student.institution.sessionCount - i) + '.attended"><img src=".images/checkbox.png" class="check" /> <button class="fullSchedule btn-default class-button"> Class '
+                                + (student.institution.sessionCount - i) + '</button></div><div ng-hide="school.person.classes.class'
+                                + (student.institution.sessionCount - i) + '.attended"><button class="btn-default class-button class-number" value="'
+                                + (student.institution.sessionCount - i) + '"><span class="class-date"><img class="stretch-calendar" src=".images/stretch.png" />{{school.person.classes.class'
+                                + (student.institution.sessionCount - i) + '.date}} &nbsp;</span> Class '
+                                + (student.institution.sessionCount - i) + '</button></div>');
+                        }
+                        return {
+                            restrict: 'A',
+                            template: classDivs.join("")
+                        }
+                
          });
         $('.home').click(function () {
             location.reload();
